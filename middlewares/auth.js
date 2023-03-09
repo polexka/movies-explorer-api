@@ -3,13 +3,13 @@ const jwt = require('jsonwebtoken');
 
 const { JWT_KEY, NODE_ENV } = process.env;
 
-const { authError } = require('../utils/AccountError');
+const { authError } = require('../utils/errors/AccountError');
 
 // eslint-disable-next-line consistent-return
 module.exports = (req, res, next) => {
   const { authorization } = req.headers;
 
-  if (!authorization || !authorization.startsWith('Bearer ')) return res.status(authError.statusCode).send({ message: authError.message });
+  if (!authorization || !authorization.startsWith('Bearer ')) return next(authError);
 
   const token = authorization.replace('Bearer ', '');
   let payload;
@@ -17,10 +17,10 @@ module.exports = (req, res, next) => {
   try {
     payload = jwt.verify(token, (NODE_ENV === 'production' ? JWT_KEY : 'secret-key'));
   } catch (err) {
-    return res.status(authError.statusCode).send({ message: authError.message });
+    return next(authError);
   }
 
-  // сюда попадает { ._id = бла бла бла}
+  // req.user = { ._id = ... }
   req.user = payload;
 
   return next();

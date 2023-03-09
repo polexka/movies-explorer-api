@@ -6,4 +6,4 @@ class AccessError extends Error {
   }
 }
 
-module.exports.accessError = new AccessError('Нельзя удалить чужую карточку.');
+module.exports.accessError = new AccessError('Нельзя удалить чужую публикацию.');

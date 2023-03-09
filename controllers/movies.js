@@ -1,6 +1,6 @@
 const Movie = require('../models/movie');
-const { accessError } = require('../utils/AccessError');
-const { notFoundError } = require('../utils/NotFoundError');
+const { accessError } = require('../utils/errors/AccessError');
+const { notFoundError } = require('../utils/errors/NotFoundError');
 
 module.exports.getMovies = (req, res, next) => {
   Movie.find({})
@@ -17,7 +17,7 @@ module.exports.createMovie = (req, res, next) => {
     year,
     description,
     image,
-    trailer,
+    trailerLink,
     nameRU,
     nameEN,
     thumbnail,
@@ -31,7 +31,7 @@ module.exports.createMovie = (req, res, next) => {
     year,
     description,
     image,
-    trailer,
+    trailerLink,
     nameRU,
     nameEN,
     thumbnail,

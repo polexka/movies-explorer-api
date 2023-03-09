@@ -1,6 +1,6 @@
-const { badRequestError } = require('../utils/BadRequest');
-const { signupError } = require('../utils/SignupError');
-const { validationError } = require('../utils/ValidationError');
+const { badRequestError } = require('../utils/errors/BadRequest');
+const { signupError } = require('../utils/errors/SignupError');
+const { validationError } = require('../utils/errors/ValidationError');
 
 module.exports = (err, req, res, next) => {
   const { statusCode = 500, message = 'На сервере произошла ошибка.' } = err;

@@ -4,8 +4,8 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 
 const { JWT_KEY, NODE_ENV } = process.env;
-const { JWT_SALT } = require('../utils/constants');
-const { notFoundError } = require('../utils/NotFoundError');
+const { JWT_SALT, JWT_DEV } = require('../utils/constants');
+const { notFoundError } = require('../utils/errors/NotFoundError');
 
 module.exports.getUserInfo = (req, res, next) => {
   User.findById(req.user._id)
@@ -41,10 +41,10 @@ module.exports.login = (req, res, next) => {
     .then((user) => {
       const token = jwt.sign(
         { _id: user._id },
-        NODE_ENV === 'production' ? JWT_KEY : 'secret-key',
+        NODE_ENV === 'production' ? JWT_KEY : JWT_DEV,
         { expiresIn: '7d' },
       );
-      // позже будет убрано в пользу авторизации и передаче токена в headers через фронт часть
+
       res.cookie('token', token, { httpOnly: true, sameSite: true });
 
       return res.send({ token });
@@ -62,5 +62,15 @@ module.exports.signup = (req, res, next) => {
       email, password: hash, name,
     }))
     .then((user) => res.send(user))
+    .catch(next);
+};
+
+module.exports.signout = (req, res, next) => {
+  User.findById(req.user._id)
+    .then((user) => {
+      if (!user) return Promise.reject(notFoundError);
+      res.clearCookie('token');
+      return res.send(user);
+    })
     .catch(next);
 };

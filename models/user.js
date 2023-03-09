@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const validator = require('validator');
-const { accountError } = require('../utils/AccountError');
+const { accountError } = require('../utils/errors/AccountError');
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -13,7 +13,6 @@ const userSchema = new mongoose.Schema({
   password: {
     type: String,
     required: true,
-    minlength: 8,
     select: false,
   },
   email: {
@@ -31,7 +30,6 @@ const userSchema = new mongoose.Schema({
   toJSON: { useProjection: true },
 });
 
-// eslint-disable-next-line func-names
 userSchema.statics.findUserByCredentials = function (email, password) {
   return this.findOne({ email }).select('+password')
     .then((user) => {
