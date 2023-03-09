@@ -25,7 +25,6 @@ const corsOptions = {
 };
 
 const app = express();
-app.use(limiter);
 app.use(cookieParser());
 
 mongoose.set('strictQuery', true);
@@ -45,6 +44,7 @@ app.use((req, res, next) => {
 app.use(cors(corsOptions));
 
 app.use(requestLogger);
+app.use(limiter);
 
 app.use('/', require('./routes/index'));
 

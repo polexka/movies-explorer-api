@@ -5,12 +5,12 @@ const User = require('../models/user');
 
 const { JWT_KEY, NODE_ENV } = process.env;
 const { JWT_SALT, JWT_DEV } = require('../utils/constants');
-const { notFoundError } = require('../utils/errors/NotFoundError');
+const { getUserError } = require('../utils/errors/NotFoundError');
 
 module.exports.getUserInfo = (req, res, next) => {
   User.findById(req.user._id)
     .then((user) => {
-      if (!user) return Promise.reject(notFoundError);
+      if (!user) return Promise.reject(getUserError);
       return res.send(user);
     })
     .catch(next);
@@ -28,7 +28,7 @@ module.exports.updateUser = (req, res, next) => {
     },
   )
     .then((user) => {
-      if (!user) return Promise.reject(notFoundError);
+      if (!user) return Promise.reject(getUserError);
       return res.send(user);
     })
     .catch(next);
@@ -68,7 +68,7 @@ module.exports.signup = (req, res, next) => {
 module.exports.signout = (req, res, next) => {
   User.findById(req.user._id)
     .then((user) => {
-      if (!user) return Promise.reject(notFoundError);
+      if (!user) return Promise.reject(getUserError);
       res.clearCookie('token');
       return res.send(user);
     })

@@ -1,9 +1,9 @@
 const Movie = require('../models/movie');
 const { accessError } = require('../utils/errors/AccessError');
-const { notFoundError } = require('../utils/errors/NotFoundError');
+const { createMovieError, deleteMovieError } = require('../utils/errors/NotFoundError');
 
 module.exports.getMovies = (req, res, next) => {
-  Movie.find({})
+  Movie.find({ owner: req.user._id })
     .populate('owner')
     .then((movies) => res.send(movies))
     .catch(next);
@@ -40,7 +40,7 @@ module.exports.createMovie = (req, res, next) => {
   })
     .then((movie) => movie.populate('owner'))
     .then((movie) => {
-      if (!movie) return Promise.reject(notFoundError);
+      if (!movie) return Promise.reject(createMovieError);
       return res.send(movie);
     })
     .catch(next);
@@ -49,7 +49,7 @@ module.exports.createMovie = (req, res, next) => {
 module.exports.deleteMovie = (req, res, next) => {
   Movie.findById(req.params.movieId)
     .then((movie) => {
-      if (!movie) return Promise.reject(notFoundError);
+      if (!movie) return Promise.reject(deleteMovieError);
       return movie.populate('owner');
     })
     .then((movie) => {
@@ -58,7 +58,7 @@ module.exports.deleteMovie = (req, res, next) => {
     })
     .then(() => Movie.findByIdAndRemove(req.params.movieId, { runValidators: true }))
     .then((movie) => {
-      if (!movie) return Promise.reject(notFoundError);
+      if (!movie) return Promise.reject(deleteMovieError);
       return res.send(movie);
     })
     .catch(next);
