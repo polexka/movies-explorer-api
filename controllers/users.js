@@ -61,7 +61,17 @@ module.exports.signup = (req, res, next) => {
     .then((hash) => User.create({
       email, password: hash, name,
     }))
-    .then((user) => res.send(user))
+    .then((user) => {
+      const token = jwt.sign(
+        { _id: user._id },
+        NODE_ENV === 'production' ? JWT_KEY : JWT_DEV,
+        { expiresIn: '7d' },
+      );
+
+      res.cookie('token', token, { httpOnly: true, sameSite: true });
+
+      return res.send({ token });
+    })
     .catch(next);
 };
 
