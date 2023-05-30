@@ -12,10 +12,11 @@ const { limiter } = require('./utils/rateLimiter');
 
 const { NODE_ENV, DB } = process.env;
 
-const { PORT = 3000 } = process.env;
+const { PORT = 5000 } = process.env;
 
 const allowedCors = [
   'https://51.250.27.116:3000',
+  'http://localhost:3000',
   '*',
 ];
 const corsOptions = {
@@ -29,6 +30,7 @@ app.use(cookieParser());
 
 mongoose.set('strictQuery', true);
 mongoose.connect(NODE_ENV === 'production' ? DB : DB_DEV);
+// mongoose.connect(DB_DEV);
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -37,6 +39,9 @@ app.use((req, res, next) => {
   req.headers = {
     authorization: `Bearer ${req.cookies.token}`,
   };
+
+  res.header('Access-Control-Allow-Origin', 'http://localhost:3000');
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
 
   return next();
 });
