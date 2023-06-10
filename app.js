@@ -15,8 +15,8 @@ const { NODE_ENV, DB } = process.env;
 const { PORT = 5000 } = process.env;
 
 const allowedCors = [
-  'https://51.250.27.116:3000',
-  'http://localhost:3000',
+  'https://84.201.175.61:3000',
+  'https://localhost:3000',
   '*',
 ];
 const corsOptions = {
@@ -30,7 +30,7 @@ app.use(cookieParser());
 
 mongoose.set('strictQuery', true);
 mongoose.connect(NODE_ENV === 'production' ? DB : DB_DEV);
-// mongoose.connect(DB_DEV);
+mongoose.connect(DB_DEV);
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
