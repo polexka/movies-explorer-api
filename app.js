@@ -12,17 +12,17 @@ const { limiter } = require('./utils/rateLimiter');
 
 const { NODE_ENV, DB } = process.env;
 
-const { PORT = 5000 } = process.env;
+const { PORT = 3000 } = process.env;
 
 const allowedCors = [
-  'https://84.201.175.61:3000',
-  'http://localhost:3000',
-  '*',
+  'https://api.diploma.nomoredomains.work',
+  'https://diploma.nomoredomains.work',
 ];
 const corsOptions = {
   origin: allowedCors,
   optionsSuccessStatus: 200,
   credentials: true,
+  allowedHeaders: 'Origin, X-Requested-With, Content-Type, Accept',
 };
 
 const app = express();
@@ -41,9 +41,6 @@ app.use((req, res, next) => {
   req.headers = {
     authorization: `Bearer ${req.cookies.token}`,
   };
-
-  res.header('Access-Control-Allow-Origin', 'http://localhost:3000');
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
 
   return next();
 });
